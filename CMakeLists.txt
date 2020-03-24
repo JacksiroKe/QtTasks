@@ -1,6 +1,5 @@
-cmake_minimum_required( VERSION 3.0 )
-
-project( tasks )
+project( QtTasks )
+cmake_minimum_required(VERSION 2.8.12.2)
 
 set( LIB_VERSION "1.2.6" )
 set( SO_VERSION "2.0.0" )
@@ -17,12 +16,11 @@ INCLUDE( CMakeDependentOption )
 
 find_package( Qt5Core REQUIRED )
 
-QT5_WRAP_CPP( MOC_LIBRARY task.hpp )
+QT5_WRAP_CPP( MOC_LIBRARY src/task.hpp )
 
 include_directories( ${Qt5Core_INCLUDE_DIRS} )
 
 if( MCHUNGU_TASK_INSTALL )
-
 	add_library( mhogomchungu_task SHARED ${MOC_LIBRARY} )
 	set_target_properties(mhogomchungu_task PROPERTIES SOVERSION "${SO_VERSION}")
 else()
@@ -38,9 +36,20 @@ else()
 endif()
 
 if( DEBUG )
-	QT5_WRAP_CPP( MOC_EXE example.h )
-	add_executable( example example.cpp main.cpp ${MOC_EXE} )
-	target_link_libraries( example mhogomchungu_task )
+	QT5_WRAP_CPP( MOC_EXE
+		src/mainwindow.h
+	)
+	add_executable(QtTasks
+		src/main.cpp
+		src/mainwindow.cpp
+		src/mainwindow.h
+		src/mainwindow.ui
+		${MOC_EXE}
+	)
+	target_link_libraries(
+		QtTasks
+		mhogomchungu_task 
+	)
 endif()
 
 file( WRITE ${PROJECT_BINARY_DIR}/mhogomchungu_task.pc
